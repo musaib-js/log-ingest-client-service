@@ -3,6 +3,8 @@ import { Breadcrumb, Layout, theme } from 'antd';
 import Nav from './Utilities/Nav';
 import Home from './Components/Home';
 import Ingest from './Components/Ingest';
+import Login from './Components/Auth/Login';
+import Register from './Components/Auth/Register';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 const { Content, Footer } = Layout;
 
@@ -21,6 +23,8 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Home colorBgContainer={colorBgContainer} />} />
             <Route exact path="ingest" element={<Ingest colorBgContainer={colorBgContainer} />} />
+            <Route exact path="register" element={<Register colorBgContainer={colorBgContainer} />} />
+            <Route exact path="login" element={<Login colorBgContainer={colorBgContainer} />} />
           </Routes>
         </Content>
         <Footer style={{ textAlign: 'center' }}>Log Management Dashboard ©2023</Footer>

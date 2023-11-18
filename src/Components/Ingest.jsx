@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Row, Col, DatePicker, message } from 'antd';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Ingest({colorBgContainer}) {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, []);
 
   const onFinish = async (values) => {
     setLoading(true);

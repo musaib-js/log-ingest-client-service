@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Input, Button, Table, Row, Col, Select, DatePicker } from "antd";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 const { Option } = Select;
 
 export default function Home({ colorBgContainer }) {
+  let navigate = useNavigate();
   const [logs, setLogs] = useState([]);
   const [filters, setFilters] = useState({
     level: "",
@@ -19,6 +21,13 @@ export default function Home({ colorBgContainer }) {
     endDate: "",
   });
   const [filterType, setFilterType] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchLogs = async () => {
