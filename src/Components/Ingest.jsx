@@ -11,6 +11,7 @@ export default function Ingest({colorBgContainer}) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
+        message.error("Please login to ingest the logs");
       navigate('/login');
     }
   }, []);

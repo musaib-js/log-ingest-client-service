@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button, Table, Row, Col, Select, DatePicker } from "antd";
+import { Input, Button, Table, Row, Col, Select, DatePicker, message } from "antd";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
@@ -25,6 +25,7 @@ export default function Home({ colorBgContainer }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
+      message.error("Please login to view the logs");
       navigate('/login');
     }
   }, []);
