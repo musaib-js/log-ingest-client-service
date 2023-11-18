@@ -19,7 +19,9 @@ export default function Ingest({colorBgContainer}) {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-        const formattedData = {
+        const formattedData = 
+        [
+        {
             level: values.level,
             message: values.message,
             resourceId: values.resourceId,
@@ -30,7 +32,8 @@ export default function Ingest({colorBgContainer}) {
             metadata: {
               parentResourceId: values['metadata.parentResourceId'],
             },
-          };
+          }
+        ]
       await axios.post(`${process.env.REACT_APP_API_URL}/insert-logs`, formattedData);
       message.success('Log inserted successfully');
       form.resetFields();

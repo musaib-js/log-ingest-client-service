@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button, Table, Row, Col, Select, DatePicker, message } from "antd";
+import { Input, Button, Table, Row, Col, Select, DatePicker, message, Pagination } from "antd";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
@@ -21,6 +21,11 @@ export default function Home({ colorBgContainer }) {
     endDate: "",
   });
   const [filterType, setFilterType] = useState("");
+  const [pagination, setPagination] = useState({
+    pageSize: 50,
+    currentPage: 1,
+    totalLogs: 0,
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -30,20 +35,26 @@ export default function Home({ colorBgContainer }) {
     }
   }, []);
 
+  const fetchLogs = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-logs`, {
+        params: {
+          ...filters,
+          page: pagination.currentPage,
+          pageSize: pagination.pageSize,
+        },
+      });
+      const { logs: data, totalLogs } = response.data;
+      setLogs(data);
+      setPagination({ ...pagination, totalLogs });
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/get-logs`
-        );
-        const data = response.data;
-        setLogs(data);
-      } catch (error) {
-        console.error("Error fetching logs:", error);
-      }
-    };
     fetchLogs();
-  }, []);
+  }, [filters, pagination.currentPage]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -58,19 +69,12 @@ export default function Home({ colorBgContainer }) {
     setFilters({ ...filters, endDate: dateString });
   };
 
-  const applyFilters = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/get-logs`,
-        {
-          params: filters,
-        }
-      );
-      const data = response.data;
-      setLogs(data);
-    } catch (error) {
-      console.error("Error fetching filtered logs:", error);
-    }
+  const applyFilters = () => {
+    setPagination({ ...pagination, currentPage: 1 });
+  };
+
+  const handlePaginationChange = (page) => {
+    setPagination({ ...pagination, currentPage: page });
   };
 
   const filterOptions = [
@@ -151,8 +155,16 @@ export default function Home({ colorBgContainer }) {
       </Row>
       <Row justify="center" style={{ marginTop: "20px" }}>
         <Col xs={24} sm={20} md={18} lg={16}>
-          <Table columns={columns} dataSource={logs} scroll={{ x: "100%" }} />
+          <Table columns={columns} dataSource={logs} scroll={{ x: "100%" }} pagination={false} />
         </Col>
+      </Row>
+      <Row justify="center" style={{ marginTop: "20px" }}>
+        <Pagination
+          current={pagination.currentPage}
+          pageSize={pagination.pageSize}
+          total={pagination.totalLogs}
+          onChange={handlePaginationChange}
+        />
       </Row>
     </div>
   );
